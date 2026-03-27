@@ -5,6 +5,7 @@
 #include "phone_call.h"
 #include "file_reader.h"
 #include "filter.h"
+#include "sort.h"
 
 void printAll(PhoneCall* records, int n) {
     for (int i = 0; i < n; i++)
@@ -35,20 +36,48 @@ int main() {
         std::cin >> choice;
         if (choice == 0) break;
 
-        PhoneCall filtered[MAX_RECORDS];
-        int count = 0;
-
-        if (choice == 1)
-            count = filterRecords(records, n, filtered, isMobile);
-        else if (choice == 2)
-            count = filterRecords(records, n, filtered, isNovember2021);
-        else if (choice == 3) {
-            std::cout << "Sortirovka budet dobavlena pozæå\n";
-            continue;
+        if (choice == 1) {
+            PhoneCall filtered[MAX_RECORDS];
+            int count = filterRecords(records, n, filtered, isMobile);
+            std::cout << "Naydeno: " << count << "\n";
+            printAll(filtered, count);
         }
+        else if (choice == 2) {
+            PhoneCall filtered[MAX_RECORDS];
+            int count = filterRecords(records, n, filtered, isNovember2021);
+            std::cout << "Naydeno: " << count << "\n";
+            printAll(filtered, count);
+        }
+        else if (choice == 3) {
+            PhoneCall* ptrs[MAX_RECORDS];
+            for (int i = 0; i < n; i++) ptrs[i] = &records[i];
 
-        std::cout << "Naydeno: " << count << "\n";
-        printAll(filtered, count);
+            SortFunc sorts[2] = { heapSort, quickSort };
+            std::cout << "Metod sortirovki:\n";
+            std::cout << "1 - Piramidalnaya\n";
+            std::cout << "2 - Bystraya\n";
+            std::cout << "Vybor: ";
+            int sm; std::cin >> sm;
+            if (sm < 1 || sm > 2) { std::cout << "Neverno\n"; continue; }
+
+            CompareFunc cmps[2] = { cmpByDurationDesc, cmpByNumberThenCostDesc };
+            std::cout << "Kriteriy:\n";
+            std::cout << "1 - Po ubyvaniyu prodolzhitelnosti\n";
+            std::cout << "2 - Po nomeru i stoimosti\n";
+            std::cout << "Vybor: ";
+            int cm; std::cin >> cm;
+            if (cm < 1 || cm > 2) { std::cout << "Neverno\n"; continue; }
+
+            sorts[sm - 1](ptrs, n, cmps[cm - 1]);
+
+            for (int i = 0; i < n; i++)
+                printf("%s %02d.%02d.%02d %02d:%02d:%02d %02d:%02d:%02d %s %.2f\n",
+                    ptrs[i]->number,
+                    ptrs[i]->day, ptrs[i]->month, ptrs[i]->year,
+                    ptrs[i]->startH, ptrs[i]->startM, ptrs[i]->startS,
+                    ptrs[i]->durH, ptrs[i]->durM, ptrs[i]->durS,
+                    ptrs[i]->tariff, ptrs[i]->cost);
+        }
     }
     return 0;
 }
