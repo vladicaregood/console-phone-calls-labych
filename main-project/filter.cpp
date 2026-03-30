@@ -11,7 +11,7 @@ int filterRecords(PhoneCall* src, int n, PhoneCall* dst,
 }
 
 bool isMobile(const PhoneCall& r) {
-    return strcmp(r.tariff, "мобильный") == 0;
+    return strcmp(r.tariff, "mob") == 0;
 }
 
 bool isNovember2021(const PhoneCall& r) {
