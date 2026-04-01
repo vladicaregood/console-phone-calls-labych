@@ -1,7 +1,7 @@
 #pragma once
 #include "constants.h"
 
-struct PhoneCall {
+struct PhoneCall { //шаблон записи
     char number[MAX_STRING];    // номер вызываемого абонента
     int day, month, year;       // дата: дд.мм.гг
     int startH, startM, startS; // время начала чч:мм:сс

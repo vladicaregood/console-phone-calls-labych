@@ -7,7 +7,7 @@
 #include "filter.h"
 #include "sort.h"
 
-void printAll(PhoneCall* records, int n) {
+void printAll(PhoneCall* records, int n) { //вывод данных из массива в отсортированном виде
     for (int i = 0; i < n; i++)
         printf("%s %02d.%02d.%02d %02d:%02d:%02d %02d:%02d:%02d %s %.2f\n",
             records[i].number,
@@ -21,8 +21,8 @@ int main() {
     std::cout << "Var 9. Phone calls" << std::endl;
     std::cout << "Vlad Sokolovsky 25ISiT1d" << std::endl;
 
-    PhoneCall records[MAX_RECORDS];
-    int n = readData("data.txt", records);
+    PhoneCall records[MAX_RECORDS]; //массив для хранения записей
+    int n = readData("data.txt", records); //чтение, кол-во записей (массив из file_reader)
     std::cout << "Zagrusheno zapisey: " << n << std::endl;
 
     int choice = 0;
@@ -37,9 +37,9 @@ int main() {
         if (choice == 0) break;
 
         if (choice == 1) {
-            PhoneCall filtered[MAX_RECORDS];
-            int count = filterRecords(records, n, filtered, isMobile);
-            std::cout << "Naydeno: " << count << "\n";
+            PhoneCall filtered[MAX_RECORDS]; //временный массив для фильтрации
+            int count = filterRecords(records, n, filtered, isMobile); //фильтрация (источник, колво, результат, условие)
+            std::cout << "Naydeno: " << count << "\n"; //вывод
             printAll(filtered, count);
         }
         else if (choice == 2) {
@@ -48,11 +48,11 @@ int main() {
             std::cout << "Naydeno: " << count << "\n";
             printAll(filtered, count);
         }
-        else if (choice == 3) {
+        else if (choice == 3) { //сортировка без копирования структур
             PhoneCall* ptrs[MAX_RECORDS];
             for (int i = 0; i < n; i++) ptrs[i] = &records[i];
 
-            SortFunc sorts[2] = { heapSort, quickSort };
+            SortFunc sorts[2] = { heapSort, quickSort }; //сортировки
             std::cout << "Metod sortirovki:\n";
             std::cout << "1 - Piramidalnaya\n";
             std::cout << "2 - Bystraya\n";
@@ -60,7 +60,7 @@ int main() {
             int sm; std::cin >> sm;
             if (sm < 1 || sm > 2) { std::cout << "Neverno\n"; continue; }
 
-            CompareFunc cmps[2] = { cmpByDurationDesc, cmpByNumberThenCostDesc };
+            CompareFunc cmps[2] = { cmpByDurationDesc, cmpByNumberThenCostDesc }; //крит сорт
             std::cout << "Kriteriy:\n";
             std::cout << "1 - Po ubyvaniyu prodolzhitelnosti\n";
             std::cout << "2 - Po nomeru i stoimosti\n";
@@ -68,9 +68,9 @@ int main() {
             int cm; std::cin >> cm;
             if (cm < 1 || cm > 2) { std::cout << "Neverno\n"; continue; }
 
-            sorts[sm - 1](ptrs, n, cmps[cm - 1]);
+            sorts[sm - 1](ptrs, n, cmps[cm - 1]); //вызов нужной СОРТИРОВКИ, ПАРАМЕТРА (n взято из начала main)
 
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < n; i++) //вывод сортировки
                 printf("%s %02d.%02d.%02d %02d:%02d:%02d %02d:%02d:%02d %s %.2f\n",
                     ptrs[i]->number,
                     ptrs[i]->day, ptrs[i]->month, ptrs[i]->year,
